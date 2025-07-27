@@ -1,0 +1,21 @@
+id,timestamp,amount,currency,transaction_type,sender_id,recipient_id,sender_name,recipient_name,description,reference,risk_level
+tx_001,2024-01-15T10:30:00,1000.00,USD,transfer,entity_001,entity_002,John Doe,Jane Smith,Payment for services,REF001,low
+tx_002,2024-01-15T11:15:00,5000.00,USD,deposit,entity_003,entity_001,Unknown,John Doe,Large deposit,REF002,medium
+tx_003,2024-01-15T12:00:00,9500.00,USD,transfer,entity_001,entity_004,John Doe,Bob Johnson,Payment,REF003,high
+tx_004,2024-01-15T12:30:00,9500.00,USD,transfer,entity_001,entity_005,John Doe,Alice Brown,Payment,REF004,high
+tx_005,2024-01-15T13:00:00,9500.00,USD,transfer,entity_001,entity_006,John Doe,Charlie Wilson,Payment,REF005,high
+tx_006,2024-01-15T13:30:00,9500.00,USD,transfer,entity_001,entity_007,John Doe,Diana Davis,Payment,REF006,high
+tx_007,2024-01-15T14:00:00,9500.00,USD,transfer,entity_001,entity_008,John Doe,Edward Miller,Payment,REF007,high
+tx_008,2024-01-16T09:00:00,75000.00,USD,wire,entity_002,entity_009,Jane Smith,Foreign Corp,International wire,REF008,critical
+tx_009,2024-01-16T09:30:00,75000.00,USD,wire,entity_002,entity_010,Jane Smith,Offshore Ltd,International wire,REF009,critical
+tx_010,2024-01-16T10:00:00,5000.00,USD,transfer,entity_003,entity_011,Unknown,Shell Company,Payment,REF010,high
+tx_011,2024-01-16T10:05:00,5000.00,USD,transfer,entity_003,entity_012,Unknown,Another Shell,Payment,REF011,high
+tx_012,2024-01-16T10:10:00,5000.00,USD,transfer,entity_003,entity_013,Unknown,Third Shell,Payment,REF012,high
+tx_013,2024-01-17T08:00:00,100.00,USD,card,entity_004,entity_014,Bob Johnson,Retail Store,Card purchase,REF013,low
+tx_014,2024-01-17T08:30:00,100.00,USD,card,entity_004,entity_015,Bob Johnson,Retail Store,Card purchase,REF014,low
+tx_015,2024-01-17T09:00:00,100.00,USD,card,entity_004,entity_016,Bob Johnson,Retail Store,Card purchase,REF015,low
+tx_016,2024-01-17T09:30:00,100.00,USD,card,entity_004,entity_017,Bob Johnson,Retail Store,Card purchase,REF016,low
+tx_017,2024-01-17T10:00:00,100.00,USD,card,entity_004,entity_018,Bob Johnson,Retail Store,Card purchase,REF017,low
+tx_018,2024-01-18T14:00:00,25000.00,USD,ach,entity_005,entity_019,Alice Brown,Legitimate Corp,ACH payment,REF018,medium
+tx_019,2024-01-18T15:00:00,25000.00,USD,ach,entity_005,entity_020,Alice Brown,Legitimate Corp,ACH payment,REF019,medium
+tx_020,2024-01-19T11:00:00,500.00,USD,transfer,entity_006,entity_021,Charlie Wilson,Small Business,Payment,REF020,low 
