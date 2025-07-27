@@ -4,7 +4,8 @@ Configuration settings for the orchestrator platform.
 
 import os
 from typing import Optional
-from pydantic import BaseSettings, Field
+from pydantic_settings import BaseSettings
+from pydantic import Field
 from dotenv import load_dotenv
 
 # Load environment variables from .env file
@@ -18,8 +19,7 @@ class OpenAISettings(BaseSettings):
     temperature: float = Field(default=0.1, env="OPENAI_TEMPERATURE")
     max_tokens: int = Field(default=2000, env="OPENAI_MAX_TOKENS")
     
-    class Config:
-        env_prefix = "OPENAI_"
+    model_config = {"env_prefix": "OPENAI_"}
 
 
 class AgentSettings(BaseSettings):
@@ -30,8 +30,7 @@ class AgentSettings(BaseSettings):
     analysis_anomaly_threshold: float = Field(default=0.05, env="ANALYSIS_ANOMALY_THRESHOLD")
     verifier_consensus_threshold: float = Field(default=0.8, env="VERIFIER_CONSENSUS_THRESHOLD")
     
-    class Config:
-        env_prefix = "AGENT_"
+    model_config = {"env_prefix": "AGENT_"}
 
 
 class LoggingSettings(BaseSettings):
@@ -39,8 +38,7 @@ class LoggingSettings(BaseSettings):
     level: str = Field(default="INFO", env="LOG_LEVEL")
     file: Optional[str] = Field(default=None, env="LOG_FILE")
     
-    class Config:
-        env_prefix = "LOG_"
+    model_config = {"env_prefix": "LOG_"}
 
 
 class Settings(BaseSettings):
@@ -62,9 +60,10 @@ class Settings(BaseSettings):
     api_host: str = Field(default="0.0.0.0", env="API_HOST")
     api_port: int = Field(default=8000, env="API_PORT")
     
-    class Config:
-        env_file = ".env"
-        env_file_encoding = "utf-8"
+    model_config = {
+        "env_file": ".env",
+        "env_file_encoding": "utf-8"
+    }
 
 
 # Global settings instance

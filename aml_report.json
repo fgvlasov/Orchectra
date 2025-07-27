@@ -1,0 +1,37 @@
+{
+  "timestamp": "2025-07-27T12:50:21.971003",
+  "summary": {
+    "total_transactions": 20,
+    "total_amount": 269500.0,
+    "high_risk_count": 10,
+    "risk_distribution": {
+      "high": 8,
+      "low": 6,
+      "medium": 3,
+      "critical": 2,
+      "low ": 1
+    }
+  },
+  "patterns": [
+    {
+      "type": "structuring",
+      "count": 2,
+      "description": "Multiple transactions under $10,000"
+    },
+    {
+      "type": "large_transactions",
+      "count": 2,
+      "description": "Transactions over $50,000"
+    },
+    {
+      "type": "rapid_movement",
+      "count": 3,
+      "description": "Multiple transactions on same day"
+    }
+  ],
+  "recommendations": [
+    "Review 10 high-risk transactions",
+    "File Suspicious Activity Report (SAR) for structuring patterns",
+    "Conduct enhanced due diligence on large transaction entities"
+  ]
+}

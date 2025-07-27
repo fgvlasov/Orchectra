@@ -1,227 +1,240 @@
-# Multi-Agent Orchestration Platform - AML MVP
+# 🚀 AML Orchestrator - Multi-Agent Anti-Money Laundering Analysis Platform
 
-A minimal viable product (MVP) of a multi-agent orchestration platform for anti-money laundering (AML) use cases. This platform uses LangChain to orchestrate multiple AI agents that work together to analyze transactions, detect suspicious patterns, and generate compliance reports.
+Платформа для анализа отмывания денег с использованием многоагентной системы на базе ИИ.
 
-## Features
+## 🎯 Возможности
 
-- **Planner Agent**: Parses user queries and creates task graphs
-- **Retriever Agent**: Fetches transaction data and external documents via RAG
-- **Analysis Agent**: Runs anomaly detection algorithms on transactions
-- **Compliance Agent**: Checks patterns against AML regulations
-- **Synthesizer Agent**: Aggregates findings into structured reports
-- **Verifier Agent**: Implements multi-agent verification with consensus
-- **Orchestrator**: Manages task flow and agent communication
+- **Многоагентная архитектура**: 6 специализированных агентов для разных задач
+- **Анализ транзакций**: Обнаружение подозрительных паттернов
+- **Соответствие требованиям**: Проверка соответствия регулятивным требованиям
+- **Верификация**: Многоагентный консенсус для повышения точности
+- **Интерактивный dashboard**: Веб-интерфейс для мониторинга и управления
 
-## Architecture
+## 🏗️ Архитектура
 
-The platform uses LangChain's agent framework with:
-- Asynchronous message bus for agent communication
-- Vector store for document retrieval (RAG)
-- OpenAI GPT models for natural language processing
-- Statistical anomaly detection algorithms
-- Multi-agent verification system
+### Агенты
 
-## Setup
+1. **Planner Agent** - Планирование задач и создание графа выполнения
+2. **Retriever Agent** - Извлечение релевантных данных
+3. **Analysis Agent** - Анализ транзакций и обнаружение аномалий
+4. **Compliance Agent** - Проверка соответствия регулятивным требованиям
+5. **Verifier Agent** - Верификация результатов через консенсус
+6. **Synthesizer Agent** - Синтез финального отчета
 
-### 1. Environment Setup
+## 🚀 Быстрый старт
+
+### 1. Установка зависимостей
 
 ```bash
-# Clone the repository
+# Клонирование репозитория
 git clone <repository-url>
 cd Orchectra
 
-# Create virtual environment
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-
-# Install dependencies
+# Установка зависимостей
 pip install -r requirements.txt
 ```
 
-### 2. Configuration
-
-Create a `.env` file in the root directory:
-
-```env
-OPENAI_API_KEY=your_openai_api_key_here
-OPENAI_MODEL=gpt-4
-LOG_LEVEL=INFO
-```
-
-### 3. Data Setup
-
-Place your transaction data in the `data/` directory:
-- `transactions.csv` - Transaction data
-- `regulatory_docs/` - Regulatory documents for RAG
-
-## Usage
-
-### Running the Platform
+### 2. Настройка конфигурации
 
 ```bash
-# Start the orchestrator
-python -m orchestrator.main
+# Копирование файла конфигурации
+copy env.example .env
 
-# Or run with specific configuration
-python -m orchestrator.main --config config.yaml
+# Редактирование .env файла
+# Добавьте ваш OpenAI API ключ:
+# OPENAI_API_KEY=your_openai_api_key_here
 ```
 
-### API Usage
+### 3. Запуск демонстрации
+
+```bash
+# Упрощенная демонстрация (работает без API ключа)
+python run_demo.py
+```
+
+### 4. Запуск полной системы
+
+```bash
+# Запуск основного оркестратора
+python -m orchestrator.main
+
+# Запуск веб-дашборда
+streamlit run dashboard/app.py
+```
+
+## 📊 Демонстрация
+
+### Упрощенная демонстрация
+
+Запустите `python run_demo.py` для просмотра базовой функциональности:
+
+- Загрузка данных транзакций
+- Анализ статистики
+- Обнаружение паттернов
+- Генерация отчета
+
+### Веб-дашборд
+
+Откройте `http://localhost:8501` для доступа к интерактивному дашборду:
+
+- **Overview**: Общий обзор системы
+- **Agents**: Статус и метрики агентов
+- **Reports**: Управление отчетами
+- **Patterns**: Анализ обнаруженных паттернов
+- **Settings**: Настройки системы
+
+## 📁 Структура проекта
+
+```
+Orchectra/
+├── orchestrator/           # Основная логика
+│   ├── agents/            # Агенты системы
+│   ├── config/            # Конфигурация
+│   ├── models/            # Модели данных
+│   └── utils/             # Утилиты
+├── dashboard/             # Веб-интерфейс
+├── data/                  # Данные транзакций
+├── tests/                 # Тесты
+├── run_demo.py           # Демонстрационный скрипт
+├── example.py            # Примеры использования
+└── requirements.txt      # Зависимости
+```
+
+## 🔧 Конфигурация
+
+### Основные настройки (.env)
+
+```env
+# OpenAI Configuration
+OPENAI_API_KEY=your_openai_api_key_here
+OPENAI_MODEL=gpt-4
+OPENAI_TEMPERATURE=0.1
+OPENAI_MAX_TOKENS=2000
+
+# Agent Configuration
+PLANNER_MAX_TASKS=10
+RETRIEVER_TOP_K=5
+RETRIEVER_SIMILARITY_THRESHOLD=0.7
+ANALYSIS_ANOMALY_THRESHOLD=0.05
+VERIFIER_CONSENSUS_THRESHOLD=0.8
+
+# Logging Configuration
+LOG_LEVEL=INFO
+LOG_FILE=logs/orchestrator.log
+
+# API Configuration
+API_HOST=0.0.0.0
+API_PORT=8000
+```
+
+## 📈 Примеры использования
+
+### Базовый анализ
 
 ```python
 from orchestrator.main import Orchestrator
 
-# Initialize orchestrator
-orchestrator = Orchestrator()
-
-# Submit a query
-result = await orchestrator.process_query(
-    "Analyze transactions for suspicious patterns in the last 30 days"
-)
-
-print(result.report)
+async def analyze_transactions():
+    orchestrator = Orchestrator()
+    await orchestrator.start()
+    
+    query = "Analyze transactions for suspicious patterns in the last 30 days"
+    report = await orchestrator.process_query(query)
+    
+    print(f"Generated report: {report.title}")
+    await orchestrator.stop()
 ```
 
-### Web Dashboard
+### Обнаружение паттернов
+
+- **Structuring**: Множественные транзакции под $10,000
+- **Layering**: Сложные цепочки транзакций
+- **Integration**: Крупные депозиты из неизвестных источников
+- **Rapid Movement**: Быстрые перемещения средств
+
+## 🧪 Тестирование
 
 ```bash
-# Start Streamlit dashboard
-streamlit run dashboard/app.py
-```
+# Запуск тестов
+pytest tests/
 
-## Testing
-
-```bash
-# Run all tests
-pytest
-
-# Run specific test categories
-pytest tests/test_agents.py
-pytest tests/test_orchestrator.py
-pytest tests/test_integration.py
-
-# Run with coverage
+# Запуск с покрытием
 pytest --cov=orchestrator tests/
 ```
 
-## Project Structure
+## 📊 Примеры отчетов
 
-```
-Orchectra/
-├── orchestrator/
-│   ├── __init__.py
-│   ├── main.py              # Main orchestrator
-│   ├── agents/              # Agent implementations
-│   │   ├── __init__.py
-│   │   ├── base.py
-│   │   ├── planner.py
-│   │   ├── retriever.py
-│   │   ├── analysis.py
-│   │   ├── compliance.py
-│   │   ├── synthesizer.py
-│   │   └── verifier.py
-│   ├── models/              # Data models
-│   │   ├── __init__.py
-│   │   ├── task.py
-│   │   ├── report.py
-│   │   └── transaction.py
-│   ├── utils/               # Utilities
-│   │   ├── __init__.py
-│   │   ├── vector_store.py
-│   │   ├── anomaly_detection.py
-│   │   └── logging.py
-│   └── config/              # Configuration
-│       ├── __init__.py
-│       └── settings.py
-├── dashboard/               # Web dashboard
-│   ├── app.py
-│   └── components/
-├── tests/                   # Test suite
-│   ├── __init__.py
-│   ├── test_agents.py
-│   ├── test_orchestrator.py
-│   └── test_integration.py
-├── data/                    # Sample data
-│   ├── transactions.csv
-│   └── regulatory_docs/
-├── requirements.txt
-├── README.md
-└── .env.example
+Система генерирует детальные отчеты в формате JSON:
+
+```json
+{
+  "id": "report_2024_001",
+  "title": "AML Analysis Report - Q1 2024",
+  "status": "completed",
+  "summary": {
+    "total_transactions_analyzed": 1500,
+    "total_amount_analyzed": 2500000.00,
+    "suspicious_patterns_found": 12,
+    "high_risk_patterns": 3,
+    "compliance_violations": 2
+  },
+  "patterns": [
+    {
+      "type": "structuring",
+      "confidence": 0.85,
+      "risk_level": "high",
+      "affected_transactions": 5,
+      "total_amount": 47500.00
+    }
+  ],
+  "recommendations": [
+    "File Suspicious Activity Report (SAR)",
+    "Implement enhanced monitoring",
+    "Conduct customer due diligence review"
+  ]
+}
 ```
 
-## API Reference
+## 🔍 Мониторинг
 
-### Orchestrator
+### Метрики агентов
 
-The main orchestrator class that manages the multi-agent system.
+- Статус выполнения
+- Количество обработанных задач
+- Процент успешности
+- Время выполнения
 
-```python
-class Orchestrator:
-    async def process_query(self, query: str) -> Report
-    async def get_agent_logs(self) -> List[LogEntry]
-    async def get_task_status(self, task_id: str) -> TaskStatus
-```
+### Логирование
 
-### Agents
+- Структурированные логи
+- Аудит действий
+- Отслеживание ошибок
 
-Each agent implements the base Agent interface:
+## 🚨 Требования
 
-```python
-class Agent:
-    async def process(self, task: Task) -> TaskResult
-    async def validate_input(self, task: Task) -> bool
-    async def handle_error(self, error: Exception) -> None
-```
+- Python 3.8+
+- OpenAI API ключ
+- 4GB+ RAM
+- Интернет-соединение
 
-## Configuration
+## 🤝 Вклад в проект
 
-The platform can be configured via environment variables or a YAML config file:
+1. Fork репозитория
+2. Создайте feature branch
+3. Внесите изменения
+4. Добавьте тесты
+5. Создайте Pull Request
 
-```yaml
-# config.yaml
-openai:
-  model: gpt-4
-  temperature: 0.1
-  max_tokens: 2000
+## 📄 Лицензия
 
-agents:
-  planner:
-    max_tasks: 10
-  retriever:
-    top_k: 5
-    similarity_threshold: 0.7
-  analysis:
-    anomaly_threshold: 0.05
-  verifier:
-    consensus_threshold: 0.8
+MIT License
 
-logging:
-  level: INFO
-  file: logs/orchestrator.log
-```
+## 🆘 Поддержка
 
-## Security Considerations
+- Создайте Issue для багов
+- Обсуждения в Discussions
+- Документация в Wiki
 
-- API keys are loaded from environment variables
-- Sensitive data is not logged
-- Input validation is performed on all user queries
-- Rate limiting is implemented for API calls
+---
 
-## Performance
-
-- Asynchronous processing for concurrent agent execution
-- Vector store caching for document retrieval
-- Model parameter sharing to reduce costs
-- Efficient task scheduling and routing
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Add tests for new functionality
-4. Ensure all tests pass
-5. Submit a pull request
-
-## License
-
-MIT License - see LICENSE file for details. 
+**Примечание**: Это демонстрационная версия. Для продакшена требуется дополнительная настройка безопасности и соответствия требованиям. 
