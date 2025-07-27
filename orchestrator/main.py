@@ -4,6 +4,8 @@ Main orchestrator for the multi-agent AML analysis platform.
 
 import asyncio
 import json
+import yaml
+import argparse
 from typing import Dict, Any, List, Optional
 from datetime import datetime
 from pathlib import Path
@@ -14,14 +16,18 @@ from .agents import (
     PlannerAgent, RetrieverAgent, AnalysisAgent, 
     ComplianceAgent, VerifierAgent, SynthesizerAgent, BaseAgent
 )
+from .agents.supply_chain_agents import (
+    InternalRetrieverAgent, ExternalRetrieverAgent, 
+    RiskAnalysisAgent, ESGComplianceAgent
+)
 from .config.settings import settings
 from .utils.logging import logger, async_logger
 
 
 class Orchestrator:
-    """Main orchestrator for the multi-agent AML analysis platform."""
+    """Main orchestrator for the multi-agent analysis platform."""
     
-    def __init__(self):
+    def __init__(self, config_path: Optional[str] = None):
         """Initialize the orchestrator."""
         self.agents: Dict[str, BaseAgent] = {}
         self.task_results: Dict[str, TaskResult] = {}
@@ -29,19 +35,89 @@ class Orchestrator:
         self.is_running = False
         self.task_queue: asyncio.Queue = asyncio.Queue()
         self.completed_tasks: List[str] = []
+        self.config: Dict[str, Any] = {}
         
-        # Initialize agents
+        # Load configuration
+        if config_path:
+            self.load_configuration(config_path)
+        else:
+            # Default AML configuration
+            self.config = self._get_default_aml_config()
+        
+        # Initialize agents based on configuration
         self._initialize_agents()
     
+    def load_configuration(self, config_path: str):
+        """Load configuration from YAML file."""
+        try:
+            config_file = Path(config_path)
+            if not config_file.exists():
+                raise FileNotFoundError(f"Configuration file not found: {config_path}")
+            
+            with open(config_file, 'r', encoding='utf-8') as f:
+                self.config = yaml.safe_load(f)
+            
+            logger.info(f"Loaded configuration from {config_path}")
+            logger.info(f"Configuration: {self.config.get('name', 'Unknown')} - {self.config.get('description', 'No description')}")
+            
+        except Exception as e:
+            logger.error(f"Error loading configuration: {e}")
+            raise
+    
+    def _get_default_aml_config(self) -> Dict[str, Any]:
+        """Get default AML configuration."""
+        return {
+            "name": "aml_analysis",
+            "description": "Anti-Money Laundering Analysis",
+            "agents": {
+                "planner": {"class": "PlannerAgent"},
+                "retriever": {"class": "RetrieverAgent"},
+                "analysis": {"class": "AnalysisAgent"},
+                "compliance": {"class": "ComplianceAgent"},
+                "verifier": {"class": "VerifierAgent"},
+                "synthesizer": {"class": "SynthesizerAgent"}
+            },
+            "task_graph": {
+                "nodes": [
+                    {"id": "plan", "type": "plan", "agent": "planner", "dependencies": []},
+                    {"id": "retrieve", "type": "retrieve", "agent": "retriever", "dependencies": ["plan"]},
+                    {"id": "analyze", "type": "analyze", "agent": "analysis", "dependencies": ["retrieve"]},
+                    {"id": "compliance", "type": "compliance", "agent": "compliance", "dependencies": ["analyze"]},
+                    {"id": "verify", "type": "verify", "agent": "verifier", "dependencies": ["compliance"]},
+                    {"id": "synthesize", "type": "synthesize", "agent": "synthesizer", "dependencies": ["verify"]}
+                ]
+            }
+        }
+    
     def _initialize_agents(self):
-        """Initialize all agents."""
-        # Create agents
-        self.agents["planner"] = PlannerAgent()
-        self.agents["retriever"] = RetrieverAgent()
-        self.agents["analysis"] = AnalysisAgent()
-        self.agents["compliance"] = ComplianceAgent()
-        self.agents["verifier"] = VerifierAgent()
-        self.agents["synthesizer"] = SynthesizerAgent()
+        """Initialize all agents based on configuration."""
+        agent_configs = self.config.get("agents", {})
+        
+        for agent_name, agent_config in agent_configs.items():
+            agent_class = agent_config.get("class")
+            
+            if agent_class == "PlannerAgent":
+                self.agents[agent_name] = PlannerAgent()
+            elif agent_class == "RetrieverAgent":
+                self.agents[agent_name] = RetrieverAgent()
+            elif agent_class == "AnalysisAgent":
+                self.agents[agent_name] = AnalysisAgent()
+            elif agent_class == "ComplianceAgent":
+                self.agents[agent_name] = ComplianceAgent()
+            elif agent_class == "VerifierAgent":
+                self.agents[agent_name] = VerifierAgent()
+            elif agent_class == "SynthesizerAgent":
+                self.agents[agent_name] = SynthesizerAgent()
+            elif agent_class == "InternalRetrieverAgent":
+                self.agents[agent_name] = InternalRetrieverAgent(agent_config)
+            elif agent_class == "ExternalRetrieverAgent":
+                self.agents[agent_name] = ExternalRetrieverAgent(agent_config)
+            elif agent_class == "RiskAnalysisAgent":
+                self.agents[agent_name] = RiskAnalysisAgent(agent_config)
+            elif agent_class == "ESGComplianceAgent":
+                self.agents[agent_name] = ESGComplianceAgent(agent_config)
+            else:
+                logger.warning(f"Unknown agent class: {agent_class}")
         
         logger.info(f"Initialized {len(self.agents)} agents")
     
@@ -192,6 +268,15 @@ class Orchestrator:
     
     def _get_agent_for_task(self, task: Task) -> str:
         """Get the agent name for a task type."""
+        # Check configuration first
+        task_graph = self.config.get("task_graph", {})
+        nodes = task_graph.get("nodes", [])
+        
+        for node in nodes:
+            if node.get("id") == task.id or node.get("type") == task.type.value:
+                return node.get("agent", "unknown")
+        
+        # Fallback to default mapping
         agent_mapping = {
             TaskType.PLAN: "planner",
             TaskType.RETRIEVE: "retriever",
@@ -232,7 +317,7 @@ class Orchestrator:
         # This would need proper deserialization logic
         # For now, return a simple report
         report = AMLReport(
-            title=report_data.get("title", "AML Analysis Report"),
+            title=report_data.get("title", "Analysis Report"),
             description=report_data.get("description", ""),
             status=report_data.get("status", "draft")
         )
@@ -278,16 +363,20 @@ class Orchestrator:
 
 
 # Convenience function for running the orchestrator
-async def run_orchestrator():
+async def run_orchestrator(config_path: Optional[str] = None):
     """Run the orchestrator with a sample query."""
-    orchestrator = Orchestrator()
+    orchestrator = Orchestrator(config_path)
     
     try:
         # Start the orchestrator
         await orchestrator.start()
         
-        # Process a sample query
-        query = "Analyze transactions for suspicious patterns in the last 30 days"
+        # Process a sample query based on configuration
+        if config_path and "supply_chain" in config_path:
+            query = "Assess ESG and compliance risks for suppliers in the file data/suppliers.csv"
+        else:
+            query = "Analyze transactions for suspicious patterns in the last 30 days"
+        
         report = await orchestrator.process_query(query)
         
         print(f"Generated report: {report.title}")
@@ -295,7 +384,15 @@ async def run_orchestrator():
         print(f"Status: {report.status}")
         
         # Export the report
-        await orchestrator.export_report(report.id, "aml_report.json")
+        output_dir = Path("reports")
+        output_dir.mkdir(exist_ok=True)
+        
+        if config_path and "supply_chain" in config_path:
+            output_file = output_dir / "supply_chain_audit.json"
+        else:
+            output_file = output_dir / "aml_report.json"
+        
+        await orchestrator.export_report(report.id, str(output_file))
         
     except Exception as e:
         logger.error(f"Error running orchestrator: {e}")
@@ -303,5 +400,25 @@ async def run_orchestrator():
         await orchestrator.stop()
 
 
+def main():
+    """Main entry point with command line argument support."""
+    parser = argparse.ArgumentParser(description="Multi-Agent Analysis Platform")
+    parser.add_argument(
+        "--config", 
+        type=str, 
+        help="Path to configuration file (e.g., configs/supply_chain.yaml)"
+    )
+    parser.add_argument(
+        "--query", 
+        type=str, 
+        help="Custom query to process"
+    )
+    
+    args = parser.parse_args()
+    
+    # Run the orchestrator
+    asyncio.run(run_orchestrator(args.config))
+
+
 if __name__ == "__main__":
-    asyncio.run(run_orchestrator()) 
+    main() 

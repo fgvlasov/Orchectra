@@ -1,0 +1,21 @@
+id,name,country,industry,supplier_type,esg_score,financial_stability,prior_violations,supply_category,annual_spend,contract_duration,risk_level
+supplier_001,Global Manufacturing Co,China,Manufacturing,Tier 1,0.45,0.6,2,Electronics,2500000,3,medium
+supplier_002,GreenTech Solutions,Germany,Technology,Tier 1,0.85,0.8,0,Renewable Energy,1800000,5,low
+supplier_003,MetalCorp Industries,Russia,Mining,Tier 2,0.25,0.4,5,Raw Materials,3200000,2,high
+supplier_004,Sustainable Textiles,India,Textiles,Tier 1,0.35,0.5,3,Apparel,1200000,4,medium
+supplier_005,Clean Energy Systems,Denmark,Energy,Tier 1,0.90,0.9,0,Energy,4500000,7,low
+supplier_006,Chemical Solutions Ltd,China,Chemicals,Tier 2,0.20,0.3,8,Chemicals,2800000,1,critical
+supplier_007,Forest Products Inc,Brazil,Forestry,Tier 2,0.30,0.4,4,Paper & Packaging,900000,3,high
+supplier_008,Digital Innovations,USA,Technology,Tier 1,0.75,0.8,1,Software,3500000,5,low
+supplier_009,Steel Dynamics,Ukraine,Steel,Tier 2,0.15,0.2,12,Metals,4100000,2,critical
+supplier_010,Organic Foods Co,Canada,Agriculture,Tier 1,0.80,0.7,0,Food & Beverage,800000,4,low
+supplier_011,Plastic Solutions,Vietnam,Plastics,Tier 2,0.25,0.4,6,Plastics,1500000,2,high
+supplier_012,Electronics Assembly,Malaysia,Electronics,Tier 1,0.55,0.6,2,Electronics,2200000,3,medium
+supplier_013,Textile Mills Ltd,Bangladesh,Textiles,Tier 2,0.20,0.3,7,Apparel,1100000,1,critical
+supplier_014,Automotive Parts Co,Mexico,Automotive,Tier 1,0.65,0.7,1,Automotive,3800000,4,medium
+supplier_015,Pharmaceutical Labs,India,Pharmaceuticals,Tier 1,0.70,0.8,1,Healthcare,2900000,5,low
+supplier_016,Construction Materials,Turkey,Construction,Tier 2,0.35,0.4,4,Construction,1600000,3,medium
+supplier_017,Food Processing Inc,Thailand,Food Processing,Tier 1,0.60,0.6,2,Food & Beverage,1900000,4,medium
+supplier_018,Chemical Manufacturing,Iran,Chemicals,Tier 2,0.10,0.2,15,Chemicals,3300000,1,critical
+supplier_019,Technology Services,Israel,Technology,Tier 1,0.80,0.8,0,Software,2700000,5,low
+supplier_020,Agricultural Products,Argentina,Agriculture,Tier 2,0.40,0.5,3,Food & Beverage,1400000,3,medium 
